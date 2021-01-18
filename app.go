@@ -42,7 +42,7 @@ import (
 
 	// Custom packages
 	"graph"
-	"benchmark"
+	"types"
 )
 
 /*
@@ -116,8 +116,8 @@ func (a *Application) From_Graph (
 	chains        []int,                  // List of chain lengths
 	paths         [][]int,                // Paths of the chains
 	periods       []float64,              // Period of the chains
-	node_wcet_map map[int]float64,        // Maps a node to a WCET
-	node_work_map map[int]benchmark.Work, // Maps a node to a benchmark
+	node_wcet_map map[int]int64,        // Maps a node to a WCET
+	node_work_map map[int]types.Work,     // Maps a node to a benchmark
 	node_prio_map map[int]int,            // Maps a node to a priority
 	g             *graph.Graph) error {   // 2D graph with node relations
 	var err error = nil
@@ -153,15 +153,15 @@ func (a *Application) From_Graph (
 				entry, exists := node_callback_map[node]
 				if !exists {
 					benchmark_name := ""
-					if node_work_map[node].Benchmark != nil {
-						benchmark_name = node_work_map[node].Benchmark.Name
+					if node_work_map[node].Benchmark_p != nil {
+						benchmark_name = node_work_map[node].Benchmark_p.Name
 					}
 					entry = Callback{
 						ID:        node,
 						Priority:  node_prio_map[node],
 						Timer:     (i == 0),
 						Period:    int64(periods[get_row_chain(node, chains)]),
-						WCET:      int64(node_wcet_map[node]),
+						WCET:      node_wcet_map[node],
 						Benchmark: benchmark_name,
 						Repeats:   node_work_map[node].Iterations,
 						Topics_rx: []int{},
@@ -215,16 +215,6 @@ func (a *Application) From_Graph (
 	if nil != err {
 		return err
 	}
-
-	// // Debug
-	// data, _ := json.Marshal(*a)
-	// fmt.Printf("\n\n")
- //    fmt.Println(string(data))
-
- //    var out bytes.Buffer
-	// json.Indent(&out, data, "=", "\t")
-	// out.WriteTo(os.Stdout)
-
 
 	return nil
 }
