@@ -66,6 +66,7 @@ type Callback struct {
 
 type Filter struct {
 	ID          int          // Unique identifier
+	Priority    int          // Priority for use with PPE
 	Topics_rx   []int        // [1] Topic map rx[i] -> tx[i]
 	Topics_tx   []int        // [2] Topic map rx[i] -> tx[i]
 	Topics_cx   []int        // [3] Chain identifier for [1,2]
@@ -83,9 +84,10 @@ type Executor struct {
 }
 
 type Application struct {
-	Name        string       // Application identifer
-	PPE         bool         // Assumes PPE semantics if set true
-	Executors   []Executor   // Executors composing application
+	Name         string       // Application identifer
+	PPE          bool         // Assumes PPE semantics if set true
+	PPE_levels   int          // Number of priority levels needed
+	Executors    []Executor   // Executors composing application
 }
 
 
@@ -99,7 +101,7 @@ type Application struct {
 func Init_Application (name string, ppe bool, exec_count int) *Application {
 	var app Application = Application{
 		Name: name, 
-		PPE: ppe, 
+		PPE: ppe,
 		Executors: make([]Executor, exec_count),
 	}
 
@@ -182,6 +184,7 @@ func (a *Application) From_Graph (
 				if !exists {
 					entry = Filter {
 						ID:        node,
+						Priority:  node_prio_map[node],
 						Topics_rx: []int{},
 						Topics_tx: []int{},
 						Topics_cx: []int{},
