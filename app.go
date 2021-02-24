@@ -67,6 +67,8 @@ type Callback struct {
 type Filter struct {
 	ID          int          // Unique identifier
 	Priority    int          // Priority for use with PPE
+	Capacity    int          // Number of messages to store
+	Duration    int          // Maximum duration between intervals (seconds)
 	Topics_rx   []int        // [1] Topic map rx[i] -> tx[i]
 	Topics_tx   []int        // [2] Topic map rx[i] -> tx[i]
 	Topics_cx   []int        // [3] Chain identifier for [1,2]
@@ -185,6 +187,8 @@ func (a *Application) From_Graph (
 					entry = Filter {
 						ID:        node,
 						Priority:  node_prio_map[node],
+						Capacity:  1000, // TODO: Make this parameter controllable
+						Duration:  300,  // TODO: Make this parameter controllable
 						Topics_rx: []int{},
 						Topics_tx: []int{},
 						Topics_cx: []int{},
