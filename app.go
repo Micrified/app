@@ -87,7 +87,7 @@ type Executor struct {
 
 type Application struct {
 	Name         string       // Application identifer
-	PPE          bool         // Assumes PPE semantics if set true
+	PPE          int          // (0: none, 1: producer-consumer, 2: thread-dispatch)
 	PPE_levels   int          // Number of priority levels needed
 	Executors    []Executor   // Executors composing application
 }
@@ -100,7 +100,7 @@ type Application struct {
 */
 
 
-func Init_Application (name string, ppe bool, exec_count int) *Application {
+func Init_Application (name string, ppe, exec_count int) *Application {
 	var app Application = Application{
 		Name: name, 
 		PPE: ppe,
